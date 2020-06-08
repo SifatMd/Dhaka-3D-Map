@@ -9,3 +9,7 @@ List of Software used:
 - [Labelbox](https://labelbox.com/) : To Label buildings from images to train Detectron2 model
 - [Detectron2](https://github.com/facebookresearch/detectron2) : Train the Model on Labelbox Outputs and Run it to Label buildings in all images and do Instance Segmentation
 - [CesiumJS](https://cesium.com/cesiumjs/) : Add all our produced assets to CesiumJS Globe.
+
+---
+
+[![Dhaka 3D Map](http://img.youtube.com/vi/sbtnKjdcoQ4/0.jpg)](http://www.youtube.com/watch?v=sbtnKjdcoQ4 "Dhaka 3D Map")
