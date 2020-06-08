@@ -1,0 +1,194 @@
+<head>
+  <meta charset="utf-8">
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.62/Build/Cesium/Cesium.js"></script>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.62/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <title>Dhaka3D - BUET</title>
+  
+</head>
+<body>
+
+  <div class="fixed-action-btn">
+    <a class="btn-floating btn-large black">
+      <i class="large material-icons">add_circle_outline</i>
+    </a>
+    <ul>
+      <!--<li><a class="btn-floating red"><i class="material-icons">Sat</i></a></li>-->
+      <li><a class="btn-floating red" href="/map/"><i class="material-icons">satellite</i></a></li>
+      <li><a class="btn-floating yellow darken-1" href="/3dmesh"><i class="material-icons">3d_rotation</i></a></li>
+    </ul>
+  </div>
+
+
+  <div id="cesiumContainer" style="width: 100%; height:100%; font-size: 2px;"></div>
+
+  <script>
+      
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3YTRkZGQxOS0wZGJjLTQzYTktOTJhZC02MTZkMmExODEzY2UiLCJpZCI6MjAxNTQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NzY4Mzc4Nzd9.q1SwfTmFLZsR2z9-EgLinQMGrdIOCBBd4794IL9mfFc';
+    var viewer = new Cesium.Viewer('cesiumContainer', {
+        animation: false,
+        timeline: false,
+        baseLayerPicker: false,
+        sceneModePicker: false,
+        imageryProvider : new Cesium.OpenStreetMapImageryProvider({
+            url : 'https://a.tile.openstreetmap.org/'
+        }),
+      });
+    // var layer = viewer.imageryLayers.addImageryProvider(
+    //   new Cesium.IonImageryProvider({ assetId: 4 })
+    // );
+
+    viewer._cesiumWidget._creditContainer.parentNode.removeChild(
+    viewer._cesiumWidget._creditContainer); 
+
+    var geojsonOptions = {
+      clampToGround : true
+    };
+
+      
+    var promise = Cesium.IonResource.fromAssetId(109604)
+      .then(function (resource) {
+          return Cesium.GeoJsonDataSource.load(resource);
+      })
+      .then(function (dataSource) {
+          return viewer.dataSources.add(dataSource);
+      })
+      .then(function (dataSource) {
+          return viewer.zoomTo(dataSource);
+      })
+      .otherwise(function (error) {
+          console.log(error);
+      });
+
+      
+    var promise = Cesium.IonResource.fromAssetId(109604)
+        .then(function (resource) {
+            
+            return Cesium.GeoJsonDataSource.load(resource, {
+              stroke: Cesium.Color.GREY,
+              fill: Cesium.Color.WHITE,
+              strokeWidth: 0.2,
+              markerSymbol: '?'
+            });
+        })
+        .then(function (dataSource) {
+            return viewer.dataSources.add(dataSource);
+        })
+        .then(function(dataSource) {
+            var p = dataSource.entities.values;
+            for (var i = 0; i < p.length; i++) {
+                p[i].polygon.extrudedHeight = p[i].properties.height;
+        }
+        })
+        .then(function(dataSource){
+            return dataSource;
+            //return viewer.zoomTo(dataSource);
+        })
+        .otherwise(function (error) {
+            console.log(error);
+        });
+        
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+        // viewer.scene.debugShowFramesPerSecond = true;
+        viewer.scene.screenSpaceCameraController.enableTranslate = false;
+        //viewer.scene.screenSpaceCameraController.enableTilt = false;
+        viewer.scene.screenSpaceCameraController.enableLook = false;
+        viewer.scene.screenSpaceCameraController.enableCollisionDetection = false;
+        // viewer.imageryLayers.get(0).brightness = 0.7;
+
+        var selector;
+        var rectangleSelector = new Cesium.Rectangle();
+        var screenSpaceEventHandler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+        var cartesian = new Cesium.Cartesian3();
+        var tempCartographic = new Cesium.Cartographic();
+        var center = new Cesium.Cartographic();
+        var firstPoint = new Cesium.Cartographic();
+        var firstPointSet = false;
+        var mouseDown = false;
+        var camera = viewer.camera;
+
+
+        //Draw the selector while the user drags the mouse while holding shift
+        screenSpaceEventHandler.setInputAction(function drawSelector(movement) {
+          if (!mouseDown) {
+            return;
+          }
+
+          cartesian = camera.pickEllipsoid(movement.endPosition, viewer.scene.globe.ellipsoid, cartesian);
+
+          if (cartesian) {
+            //mouse cartographic
+            tempCartographic = Cesium.Cartographic.fromCartesian(cartesian, Cesium.Ellipsoid.WGS84, tempCartographic);
+
+            if (!firstPointSet) {
+              Cesium.Cartographic.clone(tempCartographic, firstPoint);
+              firstPointSet = true;
+            }
+            else {
+              rectangleSelector.east = Math.max(tempCartographic.longitude, firstPoint.longitude);
+              rectangleSelector.west = Math.min(tempCartographic.longitude, firstPoint.longitude);
+              rectangleSelector.north = Math.max(tempCartographic.latitude, firstPoint.latitude);
+              rectangleSelector.south = Math.min(tempCartographic.latitude, firstPoint.latitude);
+              selector.show = true; //convert them to degrees by * with 57.2958
+            }
+          }
+        }, Cesium.ScreenSpaceEventType.MOUSE_MOVE, Cesium.KeyboardEventModifier.SHIFT);
+
+        var getSelectorLocation = new Cesium.CallbackProperty(function getSelectorLocation(time, result) {
+            return Cesium.Rectangle.clone(rectangleSelector, result);
+          }, false);
+
+          screenSpaceEventHandler.setInputAction(function startClickShift() {
+            mouseDown = true;
+            selector.rectangle.coordinates = getSelectorLocation;
+            // console.log('coordinates 1 ', getSelectorLocation);
+          }, Cesium.ScreenSpaceEventType.LEFT_DOWN, Cesium.KeyboardEventModifier.SHIFT);
+
+          screenSpaceEventHandler.setInputAction(function endClickShift() {
+            mouseDown = false;
+            firstPointSet = false;
+            selector.rectangle.coordinates = rectangleSelector;
+            console.log('coordinates 2 ', rectangleSelector); 
+          }, Cesium.ScreenSpaceEventType.LEFT_UP, Cesium.KeyboardEventModifier.SHIFT);
+
+
+          // console.log('coordinates', selector.rectangle.coordinates);
+
+        //Hide the selector by clicking anywhere
+        screenSpaceEventHandler.setInputAction(function hideSelector() {
+          selector.show = false;
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+
+        selector = viewer.entities.add({
+          selectable: false,
+          show: false,
+          rectangle: {
+            coordinates: getSelectorLocation,
+            material: Cesium.Color.BLACK.withAlpha(0.2)
+          }
+        });
+    
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('.fixed-action-btn');
+      var instances = M.FloatingActionButton.init(elems, {
+        direction: 'left'
+      });
+    });
+
+  </script>
+
+  
+</body>
+</html>
