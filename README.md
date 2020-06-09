@@ -2,7 +2,7 @@
 
 **Project Title: 3D Model Reconstruction of Landscape in Urban Areas from Aerial Imagery (Funded by ICT Division, Bangladesh)**
 
-We have built an interactive 3D Map of Dhanmondi Area in Dhaka as the first part of our project. We intend to create this type of map for the whole Dhaka City. All the software used in this project are **Open-Source**.
+We have built an interactive 3D Map of Dhanmondi Area in Dhaka as the first part of our project. We intend to create this type of map for the whole Dhaka City. All the software used in this project are **Free** and **Open-Source**.
 
 List of Software used:
 - [OpenDroneMap](https://github.com/OpenDroneMap/ODM) : For Generating High-Quality Textured 3D Mesh and 2D Orthophoto
