@@ -12,4 +12,8 @@ List of Software used:
 
 ---
 
+[![Dhaka 3D Map Project](https://res.cloudinary.com/marcomontalbano/image/upload/v1598544035/video_to_markdown/images/youtube--sbtnKjdcoQ4-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://www.youtube.com/watch?v=sbtnKjdcoQ4 "Dhaka 3D Map Project")
+
+<!--
 [![Dhaka 3D Map](http://img.youtube.com/vi/sbtnKjdcoQ4/0.jpg)](http://www.youtube.com/watch?v=sbtnKjdcoQ4 "Dhaka 3D Map")
+-->
