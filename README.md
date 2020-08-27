@@ -10,6 +10,11 @@ List of Software used:
 - [Detectron2](https://github.com/facebookresearch/detectron2) : Train the Model on Labelbox Outputs and Run it to Label buildings in all images and do Instance Segmentation
 - [CesiumJS](https://cesium.com/cesiumjs/) : Add all our produced assets to CesiumJS Globe.
 
+### Contributors:
+Kazi Antor Hasan
+Sifat Muhammad Abdullah
+Dr. Mohammed Eunus Ali
+
 ---
 
 [![Dhaka 3D Map Project](https://res.cloudinary.com/marcomontalbano/image/upload/v1598544035/video_to_markdown/images/youtube--sbtnKjdcoQ4-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://www.youtube.com/watch?v=sbtnKjdcoQ4 "Dhaka 3D Map Project")
