@@ -11,11 +11,9 @@ List of Software used:
 - [CesiumJS](https://cesium.com/cesiumjs/) : Add all our produced assets to CesiumJS Globe.
 
 ### Contributors:
-Kazi Antor Hasan
-
-Sifat Muhammad Abdullah
-
-Dr. Mohammed Eunus Ali
+- Kazi Antor Hasan
+- Sifat Muhammad Abdullah
+- Dr. Mohammed Eunus Ali
 
 ---
 
